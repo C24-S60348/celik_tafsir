@@ -30,4 +30,11 @@ jobs:
           branch: gh-pages  # The branch GitHub Pages uses
           folder: build/web  # The output directory of Flutter Web
           clean: true  # Removes old files before deploying
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub token for authentication
+
+      - name: Deploy to GitHub Pages using PAT
+        if: success()
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}  # Use the PAT for authentication
+          publish_dir: ./build/web
