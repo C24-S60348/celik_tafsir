@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,16 +16,18 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.7.2'
+          flutter-version: 'stable'  # Use the latest stable version
 
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build the project
-        run: flutter build web
+      - name: Build Flutter Web
+        run: flutter build web --release
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: build/web
+          branch: gh-pages  # The branch GitHub Pages uses
+          folder: build/web  # The output directory of Flutter Web
+          clean: true  # Removes old files before deploying
+          token: ${{ secrets.GITHUB_TOKEN }}
