@@ -1,24 +1,25 @@
 name: Deploy Flutter Web to GitHub Pages
 
 on:
+  workflow_dispatch:  # Allows manual trigger from GitHub Actions UI
   push:
     branches:
-      - main
+      - main  # Change if your main branch has a different name
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-      - name: Set up Flutter
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.2'  # Specify the exact Flutter version
+          flutter-version: '3.29.2'  # Adjust as needed
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: flutter pub get
 
       - name: Build Flutter Web
@@ -30,11 +31,4 @@ jobs:
           branch: gh-pages  # The branch GitHub Pages uses
           folder: build/web  # The output directory of Flutter Web
           clean: true  # Removes old files before deploying
-          token: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub token for authentication
-
-      - name: Deploy to GitHub Pages using PAT
-        if: success()
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}  # Use the PAT for authentication
-          publish_dir: ./build/web
+          token: ${{ secrets.ACTIONS_DEPLOY_KEY }}
